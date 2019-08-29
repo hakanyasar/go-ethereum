@@ -23,11 +23,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/ethereum/go-ethereum/cmd/utils"
-	"github.com/ethereum/go-ethereum/common/compiler"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/ava-labs/go-ethereum/accounts/abi/bind"
+	"github.com/ava-labs/go-ethereum/cmd/utils"
+	"github.com/ava-labs/go-ethereum/common/compiler"
+	"github.com/ava-labs/go-ethereum/crypto"
+	"github.com/ava-labs/go-ethereum/log"
 	"gopkg.in/urfave/cli.v1"
 )
 

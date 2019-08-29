@@ -23,10 +23,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/p2p/discover"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/ava-labs/go-ethereum/crypto"
+	"github.com/ava-labs/go-ethereum/p2p/discover"
+	"github.com/ava-labs/go-ethereum/p2p/enode"
+	"github.com/ava-labs/go-ethereum/params"
 	"gopkg.in/urfave/cli.v1"
 )
 
