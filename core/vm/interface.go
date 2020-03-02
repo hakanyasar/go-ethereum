@@ -31,6 +31,10 @@ type StateDB interface {
 	AddBalance(common.Address, *big.Int)
 	GetBalance(common.Address) *big.Int
 
+	SubBalanceMultiCoin(common.Address, common.Hash, *big.Int)
+	AddBalanceMultiCoin(common.Address, common.Hash, *big.Int)
+	GetBalanceMultiCoin(common.Address, common.Hash) *big.Int
+
 	GetNonce(common.Address) uint64
 	SetNonce(common.Address, uint64)
 
@@ -45,7 +49,7 @@ type StateDB interface {
 
 	GetCommittedState(common.Address, common.Hash) common.Hash
 	GetState(common.Address, common.Hash) common.Hash
-	SetState(common.Address, common.Hash, common.Hash)
+	SetState(common.Address, common.Hash, common.Hash) error
 
 	Suicide(common.Address) bool
 	HasSuicided(common.Address) bool
@@ -71,6 +75,7 @@ type StateDB interface {
 type CallContext interface {
 	// Call another contract
 	Call(env *EVM, me ContractRef, addr common.Address, data []byte, gas, value *big.Int) ([]byte, error)
+	CallExpert(env *EVM, me ContractRef, addr common.Address, data []byte, gas, value *big.Int, coinID common.Hash, value2 *big.Int) ([]byte, error)
 	// Take another's contract code and execute within our own context
 	CallCode(env *EVM, me ContractRef, addr common.Address, data []byte, gas, value *big.Int) ([]byte, error)
 	// Same as CallCode except sender and value is propagated from parent to child scope

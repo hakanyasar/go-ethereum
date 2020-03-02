@@ -99,10 +99,11 @@ func (s *stateObject) empty() bool {
 // Account is the Ethereum consensus representation of accounts.
 // These objects are stored in the main account trie.
 type Account struct {
-	Nonce    uint64
-	Balance  *big.Int
-	Root     common.Hash // merkle root of the storage trie
-	CodeHash []byte
+	Nonce       uint64
+	Balance     *big.Int
+	Root        common.Hash // merkle root of the storage trie
+	CodeHash    []byte
+	IsMultiCoin bool
 }
 
 // newObject creates a state object.
@@ -341,6 +342,33 @@ func (s *stateObject) SetBalance(amount *big.Int) {
 	s.setBalance(amount)
 }
 
+// AddBalance removes amount from c's balance.
+// It is used to add funds to the destination account of a transfer.
+func (s *stateObject) AddBalanceMultiCoin(coinID common.Hash, amount *big.Int, db Database) {
+	if amount.Sign() == 0 {
+		if s.empty() {
+			s.touch()
+		}
+
+		return
+	}
+	s.SetBalanceMultiCoin(coinID, new(big.Int).Add(s.BalanceMultiCoin(coinID, db), amount), db)
+}
+
+// SubBalance removes amount from c's balance.
+// It is used to remove funds from the origin account of a transfer.
+func (s *stateObject) SubBalanceMultiCoin(coinID common.Hash, amount *big.Int, db Database) {
+	if amount.Sign() == 0 {
+		return
+	}
+	s.SetBalanceMultiCoin(coinID, new(big.Int).Sub(s.BalanceMultiCoin(coinID, db), amount), db)
+}
+
+func (s *stateObject) SetBalanceMultiCoin(coinID common.Hash, amount *big.Int, db Database) {
+	NormalizeCoinID(&coinID)
+	s.SetState(db, coinID, common.BigToHash(amount))
+}
+
 func (s *stateObject) setBalance(amount *big.Int) {
 	s.data.Balance = amount
 }
@@ -421,6 +449,19 @@ func (s *stateObject) CodeHash() []byte {
 
 func (s *stateObject) Balance() *big.Int {
 	return s.data.Balance
+}
+
+func IsMultiCoinKey(key common.Hash) bool {
+	return key[0]&0x01 == 1
+}
+
+func NormalizeCoinID(coinID *common.Hash) {
+	coinID[0] |= 0x01
+}
+
+func (s *stateObject) BalanceMultiCoin(coinID common.Hash, db Database) *big.Int {
+	NormalizeCoinID(&coinID)
+	return s.GetState(db, coinID).Big()
 }
 
 func (s *stateObject) Nonce() uint64 {

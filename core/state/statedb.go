@@ -228,6 +228,15 @@ func (self *StateDB) GetBalance(addr common.Address) *big.Int {
 	return common.Big0
 }
 
+// Retrieve the balance from the given address or 0 if object not found
+func (self *StateDB) GetBalanceMultiCoin(addr common.Address, coinID common.Hash) *big.Int {
+	stateObject := self.getStateObject(addr)
+	if stateObject != nil {
+		return stateObject.BalanceMultiCoin(coinID, self.db)
+	}
+	return common.Big0
+}
+
 func (self *StateDB) GetNonce(addr common.Address) uint64 {
 	stateObject := self.getStateObject(addr)
 	if stateObject != nil {
@@ -365,6 +374,29 @@ func (self *StateDB) SetBalance(addr common.Address, amount *big.Int) {
 	}
 }
 
+// AddBalance adds amount to the account associated with addr.
+func (self *StateDB) AddBalanceMultiCoin(addr common.Address, coinID common.Hash, amount *big.Int) {
+	stateObject := self.GetOrNewStateObject(addr)
+	if stateObject != nil {
+		stateObject.AddBalanceMultiCoin(coinID, amount, self.db)
+	}
+}
+
+// SubBalance subtracts amount from the account associated with addr.
+func (self *StateDB) SubBalanceMultiCoin(addr common.Address, coinID common.Hash, amount *big.Int) {
+	stateObject := self.GetOrNewStateObject(addr)
+	if stateObject != nil {
+		stateObject.SubBalanceMultiCoin(coinID, amount, self.db)
+	}
+}
+
+func (self *StateDB) SetBalanceMultiCoin(addr common.Address, coinID common.Hash, amount *big.Int) {
+	stateObject := self.GetOrNewStateObject(addr)
+	if stateObject != nil {
+		stateObject.SetBalanceMultiCoin(coinID, amount, self.db)
+	}
+}
+
 func (self *StateDB) SetNonce(addr common.Address, nonce uint64) {
 	stateObject := self.GetOrNewStateObject(addr)
 	if stateObject != nil {
@@ -379,11 +411,16 @@ func (self *StateDB) SetCode(addr common.Address, code []byte) {
 	}
 }
 
-func (self *StateDB) SetState(addr common.Address, key, value common.Hash) {
+func (self *StateDB) SetState(addr common.Address, key, value common.Hash) (res error) {
+	res = nil
 	stateObject := self.GetOrNewStateObject(addr)
 	if stateObject != nil {
+		if stateObject.data.IsMultiCoin && IsMultiCoinKey(value) {
+			return errors.New("attempt to change the multicoin balance")
+		}
 		stateObject.SetState(self.db, key, value)
 	}
+	return
 }
 
 // SetStorage replaces the entire storage for the specified account with given
