@@ -240,9 +240,11 @@ func (self *StateDB) GetBalanceMultiCoin(addr common.Address, coinID common.Hash
 func (self *StateDB) EnableMultiCoin(addr common.Address) error {
 	stateObject := self.getStateObject(addr)
 	if stateObject != nil {
-		if !stateObject.EnableMultiCoin() {
-			return errors.New("multi-coin mode already enabled")
-		}
+		return errors.New("not a fresh account")
+	}
+	stateObject = self.GetOrNewStateObject(addr)
+	if !stateObject.EnableMultiCoin() {
+		return errors.New("multi-coin mode already enabled")
 	}
 	return nil
 }
@@ -425,8 +427,8 @@ func (self *StateDB) SetState(addr common.Address, key, value common.Hash) (res 
 	res = nil
 	stateObject := self.GetOrNewStateObject(addr)
 	if stateObject != nil {
-		if stateObject.data.IsMultiCoin && IsMultiCoinKey(value) {
-			return errors.New("attempt to change the multicoin balance")
+		if stateObject.data.IsMultiCoin {
+			NormalizeStateKey(&key)
 		}
 		stateObject.SetState(self.db, key, value)
 	}

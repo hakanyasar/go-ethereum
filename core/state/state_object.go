@@ -456,11 +456,15 @@ func (s *stateObject) Balance() *big.Int {
 }
 
 func IsMultiCoinKey(key common.Hash) bool {
-	return key[0]&0x01 == 1
+	return key[0]&0x01 == 0x01
 }
 
 func NormalizeCoinID(coinID *common.Hash) {
 	coinID[0] |= 0x01
+}
+
+func NormalizeStateKey(key *common.Hash) {
+	key[0] &= 0xfe
 }
 
 func (s *stateObject) BalanceMultiCoin(coinID common.Hash, db Database) *big.Int {
