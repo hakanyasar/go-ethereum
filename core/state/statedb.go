@@ -237,6 +237,16 @@ func (self *StateDB) GetBalanceMultiCoin(addr common.Address, coinID common.Hash
 	return common.Big0
 }
 
+func (self *StateDB) EnableMultiCoin(addr common.Address) error {
+	stateObject := self.getStateObject(addr)
+	if stateObject != nil {
+		if !stateObject.EnableMultiCoin() {
+			return errors.New("multi-coin mode already enabled")
+		}
+	}
+	return nil
+}
+
 func (self *StateDB) GetNonce(addr common.Address) uint64 {
 	stateObject := self.getStateObject(addr)
 	if stateObject != nil {

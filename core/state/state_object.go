@@ -373,6 +373,10 @@ func (s *stateObject) setBalance(amount *big.Int) {
 	s.data.Balance = amount
 }
 
+func (s *stateObject) enableMultiCoin() {
+	s.data.IsMultiCoin = true
+}
+
 // Return the gas back to the origin. Used by the Virtual machine or Closures
 func (s *stateObject) ReturnGas(gas *big.Int) {}
 
@@ -462,6 +466,17 @@ func NormalizeCoinID(coinID *common.Hash) {
 func (s *stateObject) BalanceMultiCoin(coinID common.Hash, db Database) *big.Int {
 	NormalizeCoinID(&coinID)
 	return s.GetState(db, coinID).Big()
+}
+
+func (s *stateObject) EnableMultiCoin() bool {
+	if s.data.IsMultiCoin {
+		return false
+	}
+	s.db.journal.append(multiCoinEnable{
+		account: &s.address,
+	})
+	s.enableMultiCoin()
+	return true
 }
 
 func (s *stateObject) Nonce() uint64 {
