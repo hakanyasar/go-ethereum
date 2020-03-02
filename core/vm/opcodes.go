@@ -119,6 +119,7 @@ const (
 	MSIZE
 	GAS
 	JUMPDEST
+	EMC
 )
 
 // 0x60 range.
@@ -213,6 +214,7 @@ const (
 	RETURN
 	DELEGATECALL
 	CREATE2
+	CALLEX
 	STATICCALL = 0xfa
 
 	REVERT       = 0xfd
@@ -297,6 +299,7 @@ var opCodeToString = map[OpCode]string{
 	MSIZE:    "MSIZE",
 	GAS:      "GAS",
 	JUMPDEST: "JUMPDEST",
+	EMC:      "EMC",
 
 	// 0x60 range - push.
 	PUSH1:  "PUSH1",
@@ -374,6 +377,7 @@ var opCodeToString = map[OpCode]string{
 	// 0xf0 range.
 	CREATE:       "CREATE",
 	CALL:         "CALL",
+	CALLEX:       "CALLEX",
 	RETURN:       "RETURN",
 	CALLCODE:     "CALLCODE",
 	DELEGATECALL: "DELEGATECALL",
@@ -462,6 +466,7 @@ var stringToOp = map[string]OpCode{
 	"MSIZE":          MSIZE,
 	"GAS":            GAS,
 	"JUMPDEST":       JUMPDEST,
+	"EMC":            EMC,
 	"PUSH1":          PUSH1,
 	"PUSH2":          PUSH2,
 	"PUSH3":          PUSH3,
