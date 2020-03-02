@@ -483,6 +483,10 @@ func (s *stateObject) EnableMultiCoin() bool {
 	return true
 }
 
+func (s *stateObject) IsMultiCoin() bool {
+	return s.data.IsMultiCoin
+}
+
 func (s *stateObject) Nonce() uint64 {
 	return s.data.Nonce
 }

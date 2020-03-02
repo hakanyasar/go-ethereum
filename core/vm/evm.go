@@ -32,7 +32,8 @@ var emptyCodeHash = crypto.Keccak256Hash(nil)
 
 type (
 	// CanTransferFunc is the signature of a transfer guard function
-	CanTransferFunc func(StateDB, common.Address, *big.Int) bool
+	CanTransferFunc   func(StateDB, common.Address, *big.Int) bool
+	CanTransferMCFunc func(StateDB, common.Address, common.Address, common.Hash, *big.Int) bool
 	// TransferFunc is the signature of a transfer function
 	TransferFunc   func(StateDB, common.Address, common.Address, *big.Int)
 	TransferMCFunc func(StateDB, common.Address, common.Address, common.Hash, *big.Int)
@@ -76,7 +77,8 @@ func run(evm *EVM, contract *Contract, input []byte, readOnly bool) ([]byte, err
 type Context struct {
 	// CanTransfer returns whether the account contains
 	// sufficient ether to transfer the value
-	CanTransfer CanTransferFunc
+	CanTransfer   CanTransferFunc
+	CanTransferMC CanTransferMCFunc
 	// Transfer transfers ether from one account to the other
 	Transfer          TransferFunc
 	TransferMultiCoin TransferMCFunc
@@ -270,10 +272,13 @@ func (evm *EVM) CallExpert(caller ContractRef, addr common.Address, input []byte
 		return nil, gas, ErrInsufficientBalance
 	}
 
-	var (
-		to       = AccountRef(addr)
-		snapshot = evm.StateDB.Snapshot()
-	)
+	var to = AccountRef(addr)
+	if !evm.Context.CanTransferMC(evm.StateDB, caller.Address(), to.Address(), coinID, value2) {
+		return nil, gas, ErrIncompatibleAccount
+	}
+
+	var snapshot = evm.StateDB.Snapshot()
+
 	if !evm.StateDB.Exist(addr) {
 		precompiles := PrecompiledContractsHomestead
 		if evm.chainRules.IsByzantium {

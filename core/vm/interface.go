@@ -35,6 +35,7 @@ type StateDB interface {
 	AddBalanceMultiCoin(common.Address, common.Hash, *big.Int)
 	GetBalanceMultiCoin(common.Address, common.Hash) *big.Int
 	EnableMultiCoin(common.Address) error
+	IsMultiCoin(common.Address) bool
 
 	GetNonce(common.Address) uint64
 	SetNonce(common.Address, uint64)

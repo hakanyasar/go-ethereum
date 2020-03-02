@@ -46,6 +46,7 @@ func NewEVMContext(msg Message, header *types.Header, chain ChainContext, author
 	}
 	return vm.Context{
 		CanTransfer:       CanTransfer,
+		CanTransferMC:     CanTransferMC,
 		Transfer:          Transfer,
 		TransferMultiCoin: TransferMultiCoin,
 		GetHash:           GetHashFn(header, chain),
@@ -89,6 +90,14 @@ func GetHashFn(ref *types.Header, chain ChainContext) func(n uint64) common.Hash
 // This does not take the necessary gas in to account to make the transfer valid.
 func CanTransfer(db vm.StateDB, addr common.Address, amount *big.Int) bool {
 	return db.GetBalance(addr).Cmp(amount) >= 0
+}
+
+func CanTransferMC(db vm.StateDB, addr common.Address, to common.Address, coinID common.Hash, amount *big.Int) bool {
+	if amount.Cmp(common.Big0) == 0 {
+		return true
+	}
+	return db.IsMultiCoin(addr) && db.IsMultiCoin(to) &&
+		db.GetBalanceMultiCoin(addr, coinID).Cmp(amount) >= 0
 }
 
 // Transfer subtracts amount from sender and adds amount to recipient using the given Db
