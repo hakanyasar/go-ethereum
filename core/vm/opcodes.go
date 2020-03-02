@@ -119,8 +119,8 @@ const (
 	MSIZE
 	GAS
 	JUMPDEST
-	EMC
-	BALANCEMC
+	EMC       = 0x5c
+	BALANCEMC = 0x5d
 )
 
 // 0x60 range.
@@ -215,7 +215,7 @@ const (
 	RETURN
 	DELEGATECALL
 	CREATE2
-	CALLEX
+	CALLEX     = 0xf6
 	STATICCALL = 0xfa
 
 	REVERT       = 0xfd
