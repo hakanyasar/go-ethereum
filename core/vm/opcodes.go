@@ -120,6 +120,7 @@ const (
 	GAS
 	JUMPDEST
 	EMC
+	BALANCEMC
 )
 
 // 0x60 range.
@@ -259,6 +260,7 @@ var opCodeToString = map[OpCode]string{
 	// 0x30 range - closure state.
 	ADDRESS:        "ADDRESS",
 	BALANCE:        "BALANCE",
+	BALANCEMC:      "BALANCEMC",
 	ORIGIN:         "ORIGIN",
 	CALLER:         "CALLER",
 	CALLVALUE:      "CALLVALUE",
@@ -430,6 +432,7 @@ var stringToOp = map[string]OpCode{
 	"SHA3":           SHA3,
 	"ADDRESS":        ADDRESS,
 	"BALANCE":        BALANCE,
+	"BALANCEMC":      BALANCEMC,
 	"ORIGIN":         ORIGIN,
 	"CALLER":         CALLER,
 	"CALLVALUE":      CALLVALUE,
@@ -539,6 +542,7 @@ var stringToOp = map[string]OpCode{
 	"CREATE":         CREATE,
 	"CREATE2":        CREATE2,
 	"CALL":           CALL,
+	"CALLEX":         CALLEX,
 	"RETURN":         RETURN,
 	"CALLCODE":       CALLCODE,
 	"REVERT":         REVERT,

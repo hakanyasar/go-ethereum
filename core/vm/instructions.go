@@ -415,6 +415,12 @@ func opBalance(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memo
 	return nil, nil
 }
 
+func opBalanceMultiCoin(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
+	addr, cid := stack.pop(), stack.pop()
+	stack.push(interpreter.evm.StateDB.GetBalanceMultiCoin(common.BigToAddress(addr), common.BigToHash(cid)))
+	return nil, nil
+}
+
 func opOrigin(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	stack.push(interpreter.intPool.get().SetBytes(interpreter.evm.Origin.Bytes()))
 	return nil, nil

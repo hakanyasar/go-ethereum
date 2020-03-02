@@ -394,6 +394,13 @@ func newFrontierInstructionSet() JumpTable {
 			maxStack:    maxStack(1, 1),
 			valid:       true,
 		},
+		BALANCEMC: {
+			execute:     opBalanceMultiCoin,
+			constantGas: params.BalanceGasFrontier,
+			minStack:    minStack(2, 1),
+			maxStack:    maxStack(2, 1),
+			valid:       true,
+		},
 		ORIGIN: {
 			execute:     opOrigin,
 			constantGas: GasQuickStep,
@@ -616,8 +623,8 @@ func newFrontierInstructionSet() JumpTable {
 		EMC: {
 			execute:     opEMC,
 			constantGas: params.EMCGas,
-			minStack:    minStack(1, 1),
-			maxStack:    maxStack(1, 1),
+			minStack:    minStack(0, 0),
+			maxStack:    maxStack(0, 0),
 			valid:       true,
 		},
 		PUSH1: {
