@@ -923,7 +923,7 @@ func opSuicide(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memo
 }
 
 func opEMC(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	return nil, interpreter.evm.StateDB.EnableMultiCoin(contract.CallerAddress)
+	return nil, interpreter.evm.StateDB.EnableMultiCoin(contract.Address())
 }
 
 // following functions are used by the instruction jump  table
